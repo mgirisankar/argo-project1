@@ -70,4 +70,4 @@ spec:
     - protocol: TCP
       port: 80         # Port the service will expose
       targetPort: 80    # Port on the container that the service will forward to
-  type: LoadBalancer  # Expose the service externally (can also use NodePort or ClusterIP depending on the requirement)
+  type: ClusterIP  # Expose the service externally (can also use NodePort or ClusterIP depending on the requirement)
