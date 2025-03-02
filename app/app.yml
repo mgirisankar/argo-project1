@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1  # You can change this number to scale the number of nginx pods
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          env:
+            - name: COLOUR
+              value: "lightblue"  # You can change this to any valid color
+          volumeMounts:
+            - name: html-volume
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: html-volume
+          configMap:
+            name: nginx-page-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-page-config
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>ArgoCD Testing</title>
+        <style>
+          body {
+            background-color: {{ .Env.COLOUR }};
+            color: black;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            padding-top: 20%;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>ArgoCD Testing</h1>
+      </body>
+    </html>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx  # This should match the label of the pods in the deployment
+  ports:
+    - protocol: TCP
+      port: 80         # Port the service will expose
+      targetPort: 80    # Port on the container that the service will forward to
+  type: LoadBalancer  # Expose the service externally (can also use NodePort or ClusterIP depending on the requirement)
