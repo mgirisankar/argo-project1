@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: nginx:latest
+          image: docker.io/nginx:latest
           env:
             - name: COLOUR
               value: "lightblue"  # You can change this to any valid color
