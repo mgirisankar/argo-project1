@@ -9,7 +9,7 @@ metadata:
   name: nginx-deployment
   namespace: app1
 spec:
-  replicas: 1  # You can change this number to scale the number of nginx pods
+  replicas: 1
   selector:
     matchLabels:
       app: nginx
@@ -18,23 +18,36 @@ spec:
       labels:
         app: nginx
     spec:
-      containers:
-        - name: nginx
-          image: docker.io/nginx:latest
+      initContainers:
+        - name: init-substitute
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              # Substitute the environment variable in index.html and set appropriate permissions
+              envsubst < /etc/nginx/templates/index.html > /usr/share/nginx/html/index.html
+              chmod 644 /usr/share/nginx/html/index.html  # Make sure nginx can read the file
           env:
             - name: COLOUR
-              value: "lightblue"  # You can change this to any valid color
+              value: "lightblue"
+          volumeMounts:
+            - name: html-template
+              mountPath: /etc/nginx/templates
+            - name: html-volume
+              mountPath: /usr/share/nginx/html
+      containers:
+        - name: nginx
+          image: nginx:latest
           volumeMounts:
             - name: html-volume
               mountPath: /usr/share/nginx/html
-            - name: html-template
-              mountPath: /etc/nginx/templates
       volumes:
-        - name: html-volume
-          emptyDir: {}
         - name: html-template
           configMap:
             name: nginx-page-template
+        - name: html-volume
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: ConfigMap
