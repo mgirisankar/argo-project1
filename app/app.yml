@@ -20,11 +20,14 @@ spec:
     spec:
       initContainers:
         - name: init-substitute
-          image: busybox
+          image: docker.io/alpine:latest  # Use the Alpine image, which includes envsubst
           command:
             - sh
             - -c
             - |
+              # Install gettext (contains envsubst) on the fly
+              apk add --no-cache gettext
+
               # Print the environment variable to verify it's being passed correctly
               echo "COLOUR=${COLOUR}"
 
@@ -46,7 +49,7 @@ spec:
               mountPath: /usr/share/nginx/html
       containers:
         - name: nginx
-          image: nginx:latest
+          image: docker.io/nginx:latest
           volumeMounts:
             - name: html-volume
               mountPath: /usr/share/nginx/html  # Nginx will serve the content from here
