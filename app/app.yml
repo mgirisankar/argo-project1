@@ -61,6 +61,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nginx-page-template
+  namespace: app1
 data:
   index.html: |
     <!DOCTYPE html>
