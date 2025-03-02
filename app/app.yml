@@ -27,15 +27,19 @@ spec:
           volumeMounts:
             - name: html-volume
               mountPath: /usr/share/nginx/html
+            - name: html-template
+              mountPath: /etc/nginx/templates
       volumes:
         - name: html-volume
+          emptyDir: {}
+        - name: html-template
           configMap:
-            name: nginx-page-config
+            name: nginx-page-template
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-page-config
+  name: nginx-page-template
   namespace: app1
 data:
   index.html: |
@@ -45,7 +49,7 @@ data:
         <title>ArgoCD Testing</title>
         <style>
           body {
-            background-color: {{ .Env.COLOUR }};
+            background-color: ${COLOUR};  <!-- Use environment variable -->
             color: black;
             text-align: center;
             font-family: Arial, sans-serif;
