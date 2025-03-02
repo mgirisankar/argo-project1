@@ -20,7 +20,7 @@ spec:
     spec:
       initContainers:
         - name: init-substitute
-          image: busybox
+          image: docker.io/busybox
           command:
             - sh
             - -c
@@ -38,7 +38,7 @@ spec:
               mountPath: /usr/share/nginx/html
       containers:
         - name: nginx
-          image: nginx:latest
+          image: docker.io/nginx:latest
           volumeMounts:
             - name: html-volume
               mountPath: /usr/share/nginx/html
