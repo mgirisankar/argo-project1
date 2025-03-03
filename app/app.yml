@@ -41,7 +41,7 @@ spec:
               chmod 644 /usr/share/nginx/html/index.html
           env:
             - name: COLOUR
-              value: "green"  # This can be replaced with any color
+              value: "white"  # This can be replaced with any color
           volumeMounts:
             - name: html-template
               mountPath: /etc/nginx/templates  # Mount the ConfigMap to this path
